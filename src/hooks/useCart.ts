@@ -1,20 +1,27 @@
 import { useEffect, useMemo, useState } from 'react';
-import { db } from "../data/db.ts";
+
+import { db } from "../data/db";
+
+import { CardItem, Product } from '../interfaces/indexInterface';
+
 
 export const useCart = () => {
 
-    const [data, setData] = useState([]);
-    const [cart, setCart] = useState([]);
+    const initialCart = () : CardItem[] =>  {
+
+        const localStorageCart =  localStorage.getItem('products');
+        return localStorageCart ? JSON.parse( localStorageCart ) : [];
+
+    }
+
+    const [data, setData] = useState<Product[]>([]);
+    const [cart, setCart] = useState(initialCart);
 
     const MIN_QUANTITY_PRODUCT = 1;
     const MAX_QUANTITY_PRODUCT = 5;
 
     useEffect(() => {
-
-        setData(db);
-        const productsLocalStorage = JSON.parse(localStorage.getItem('products')) || [];
-        setCart(productsLocalStorage);
-
+        setData( db );
     }, []);
 
     useEffect(() => {
@@ -28,14 +35,14 @@ export const useCart = () => {
     const isEmpty = useMemo(() => cart.length === 0, [cart]);
     const buyTotal = useMemo(() => cart.reduce((sum, item) => sum + (item.price * item.quantity), 0), [cart]);
 
-    const addToCart = (product) => {
+    const addToCart = (product : Product ) => {
 
         const isInCart = cart.some(item => item.id === product.id);
 
         if (!isInCart) {
 
-            product.quantity = 1;
-            setCart(prevCart => [...prevCart, product]);
+            const cardItem: CardItem = { ...product, quantity: 1 };
+            setCart(prevCart => [...prevCart, cardItem]);
 
         } else {
             console.log('Ya existe');
@@ -43,7 +50,7 @@ export const useCart = () => {
 
     }
 
-    const getProductData = (id) => {
+    const getProductData = ( id : Product['id'] ) => {
         const productIndex = cart.findIndex(product => product.id === id);
         const updatedCart = [...cart];
 
@@ -53,7 +60,7 @@ export const useCart = () => {
         };
     }
 
-    const increaseQuantity = (id) => {
+    const increaseQuantity = ( id : Product['id'] ) => {
         const {updatedCart, productIndex} = getProductData(id);
 
         if (updatedCart[productIndex].quantity === MAX_QUANTITY_PRODUCT) return;
@@ -62,7 +69,7 @@ export const useCart = () => {
         setCart(updatedCart);
     }
 
-    const decreaseQuantity = (id) => {
+    const decreaseQuantity = ( id : Product['id'] ) => {
         const {updatedCart, productIndex} = getProductData(id);
 
         if (updatedCart[productIndex].quantity === MIN_QUANTITY_PRODUCT) return;
@@ -71,17 +78,21 @@ export const useCart = () => {
         setCart(updatedCart);
     }
 
-    const deleteToCart = (id) => {
+    const deleteToCart = ( id : Product['id']) => {
 
         const updateCart = cart.filter(product => product.id !== id);
         setCart(updateCart);
 
     }
 
+    const clearCart = () => {
+        setCart([]);
+    }
+
     return {
         data,
         cart,
-        setCart,
+        clearCart,
         isEmpty,
         buyTotal,
         addToCart,

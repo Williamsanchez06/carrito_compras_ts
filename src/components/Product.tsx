@@ -1,19 +1,8 @@
 import React from 'react';
 
-interface ProductI {
-    id: number;
-    name : string;
-    image : string;
-    description : string;
-    price : number;
-}
+import { ProductProps } from '../interfaces/indexInterface';
 
-interface ProductProps {
-    product : ProductI;
-    addToCart: (product: ProductI) => void
-}
-
-    const Product = ( { product, addToCart } : ProductProps ) => {
+const Product = ( { product, addToCart } : ProductProps ) => {
 
     const { id, name, description, image, price } = product;
 

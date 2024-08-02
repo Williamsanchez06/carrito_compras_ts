@@ -1,10 +1,4 @@
-interface Product {
-    id: number;
-    name : string;
-    image : string;
-    description : string;
-    price : number;
-}
+import { Product } from '../interfaces/indexInterface';
 
 export const db : Product[] = [
     {

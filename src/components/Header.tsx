@@ -1,6 +1,9 @@
 import React from 'react';
 
-const Header = ( { cart, setCart, increaseQuantity, decreaseQuantity, deleteToCart, buyTotal, isEmpty } ) => {
+import { HeaderProps } from "../interfaces/indexInterface";
+import { CardItem } from '../interfaces/indexInterface';
+
+const Header = ( { cart, clearCart, increaseQuantity, decreaseQuantity, deleteToCart, buyTotal, isEmpty } : HeaderProps ) => {
 
     return (
         <header className="py-5 header">
@@ -34,7 +37,7 @@ const Header = ( { cart, setCart, increaseQuantity, decreaseQuantity, deleteToCa
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {cart.map( product => {
+                                            {cart.map( ( product : CardItem ) => {
 
                                                 const {id, name, image, price, quantity} = product;
 
@@ -83,7 +86,7 @@ const Header = ( { cart, setCart, increaseQuantity, decreaseQuantity, deleteToCa
                                         </table>
                                         <p className="text-end">Total pagar: <span className="fw-bold">${buyTotal}</span></p>
                                         <button className="btn btn-dark w-100 mt-3 p-2"
-                                                onClick={() => setCart([])}
+                                                onClick={() => clearCart()}
                                         >Vaciar Carrito
                                         </button>
                                     </>
